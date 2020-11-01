@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "netlify-lambda build express",
-    "start": "nodemon server.js"
+    "build": "netlify-lambda build src",
+    "start": "netlify-lambda nodemon server.js"
   },
   "author": "iamtobay",
   "license": "ISC",
