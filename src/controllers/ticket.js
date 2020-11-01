@@ -48,7 +48,7 @@ exports.createTicket = (req, res, next) => {
 
 //get tickets
 exports.getTickets = (req, res, next) => {
-  Ticket.find().populate('eventId').exec().then(
+  Ticket.find().populate('event').exec().then(
     result => {
       res.status(200).json({
         hasError: false,
