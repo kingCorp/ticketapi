@@ -1,7 +1,7 @@
 const express = require('express');
 const morgan = require('morgan');
 const bodyParser = require('body-parser');
-const mongoose = require('mongoose');
+const serverless = require('serverless-http');
 
 const app = express();
 
@@ -47,6 +47,7 @@ app.use((req, res, next) => {
 app.use('/api/v1/event', event);
 app.use('/api/v1/ticket', ticket);
 
+app.use('/.netlify/functions/server/api/v1/event', event);
 
 
 //handling errors
@@ -67,3 +68,4 @@ app.use((error, req, res, next) => {
 })
 
 module.exports = app;
+module.exports.handler = serverless(app);

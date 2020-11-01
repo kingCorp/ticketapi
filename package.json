@@ -16,6 +16,8 @@
     "express": "^4.17.1",
     "mongoose": "^5.10.9",
     "morgan": "^1.10.0",
-    "nodemon": "^2.0.5"
+    "netlify-lambda": "^2.0.1",
+    "nodemon": "^2.0.5",
+    "serverless-http": "^2.6.0"
   }
 }
