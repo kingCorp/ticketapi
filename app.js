@@ -43,8 +43,8 @@ app.use((req, res, next) => {
 
 
 //middleware routes handling requests
-app.use('/api/v1/event', event);
-app.use('/api/v1/ticket', ticket);
+app.use('/api/event', event);
+app.use('/api/ticket', ticket);
 
 //handling errors
 app.use((req, res, next) => {

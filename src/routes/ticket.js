@@ -6,12 +6,16 @@ const router = express.Router();
 const Ticket = require('../controllers/ticket');
 
 //create event
-router.post('/', Ticket.createTicket);
+router.post('/:id', Ticket.createTicket);
 //fetch all Event
 router.get('/', Ticket.getTickets);
 
 router.get('/:id/event', Ticket.getTicketsByEvent);
 
-router.get('/:id/status', Ticket.updateTicketStatus);
+router.get('/:code', Ticket.getTicket);
+
+router.get('/:code/status', Ticket.updateTicketStatus);
+
+router.get('/:code/corkage', Ticket.updateTicketCorkage);
 
 module.exports = router;

@@ -5,15 +5,16 @@ const Ticket = require('../models/ticket');
 
 //create ticket
 exports.createTicket = (req, res, next) => {
-  Event.findById(req.body.eventId).exec().then(doc => {
+  Event.findById(req.params.id).exec().then(doc => {
     if (doc !== null) {
       let ticket = new Ticket({
         _id: new mongoose.Types.ObjectId(),
         code: req.body.code,
+        phone: req.body.phone,
         description: req.body.description,
         price: req.body.price,
         quantity: req.body.quantity,
-        eventId: doc._id,
+        event: doc._id,
       });
 
       ticket.save().then(result => {
@@ -47,7 +48,7 @@ exports.createTicket = (req, res, next) => {
 
 //get tickets
 exports.getTickets = (req, res, next) => {
-  Product.find().populate('eventId').exec().then(
+  Ticket.find().populate('eventId').exec().then(
     result => {
       res.status(200).json({
         hasError: false,
@@ -64,16 +65,43 @@ exports.getTickets = (req, res, next) => {
   })
 }
 
-//update tickets
+//update tickets status
 exports.updateTicketStatus = (req, res, next) => {
-  const id = req.params.id;
+  const id = req.params.code;
   Ticket.update({
-      _id: id
+      code: id
     }, {
       $set: {
         status: 'approved'
       }
     })
+    .exec()
+    .then(result => {
+      res.status(200).json({
+        hasError: false,
+        message: 'Updated successfully',
+        data: result,
+      });
+    })
+    .catch(err => {
+      res.status(500).json({
+        hasError: true,
+        message: 'An error occurred',
+        error: err
+      });
+    });
+}
+
+//update tickets corkage
+exports.updateTicketCorkage = (req, res, next) => {
+  const id = req.params.code;
+  Ticket.update({
+    code: id
+  }, {
+    $set: {
+      corkage: 'approved'
+    }
+  })
     .exec()
     .then(result => {
       console.log(result)
@@ -95,8 +123,8 @@ exports.updateTicketStatus = (req, res, next) => {
 //get tickets for an event
 exports.getTicketsByEvent = (req, res, next) => {
   Ticket.find({
-    eventId: req.params.id
-  }).populate('eventId').exec().then(doc => {
+    event: req.params.id
+  }).populate('event').exec().then(doc => {
     res.status(200).json({
       hasError: false,
       message: "Tickets by event",
@@ -107,6 +135,34 @@ exports.getTicketsByEvent = (req, res, next) => {
     res.status(500).json({
       hasError: true,
       message: 'event doesnt exist',
+      error: err
+    });
+  })
+}
+
+//get tickets for an event
+exports.getTicket = (req, res, next) => {
+  Ticket.findOne({
+    code: req.params.code
+  }).populate('event').exec().then(doc => {
+    if(doc){
+      res.status(200).json({
+        hasError: false,
+        message: "Tickets Details",
+        data: doc
+      });
+    } else {
+      res.status(200).json({
+        hasError: true,
+        message: 'ticket doesnt exist',
+        //error: err
+      });
+    }
+  }).catch(err => {
+    console.log(err)
+    res.status(500).json({
+      hasError: true,
+      message: 'ticket doesnt exist',
       error: err
     });
   })
