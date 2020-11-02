@@ -13,7 +13,7 @@ exports.createEvent = (req, res, next) => {
   event.save().then(result => {
     res.status(200).json({
       hasError: false,
-      message: "product saved successfully",
+      message: "event created successfully",
       data: result,
     })
   }).catch(err => {
