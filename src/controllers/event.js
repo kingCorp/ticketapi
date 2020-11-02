@@ -46,3 +46,25 @@ exports.getEvents = (req, res, next) => {
   })
 
 }
+
+
+//delete event
+exports.event_delete = (req, res, next) => {
+  const id = req.params.id;
+  Event.remove({
+      _id: id
+    })
+    .exec()
+    .then(result => {
+      res.status(200).json({
+        messgae: 'Event deleted',
+        data: result
+      })
+    })
+    .catch(err => {
+      console.log(err)
+      res.status(500).json({
+        error: err
+      });
+    });
+}

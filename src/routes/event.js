@@ -11,4 +11,6 @@ router.post('/', Event.createEvent);
 //fetch all Event
 router.get('/', Event.getEvents);
 
+router.delete('/:id', Event.event_delete);
+
 module.exports = router;
