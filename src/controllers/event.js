@@ -29,7 +29,7 @@ exports.createEvent = (req, res, next) => {
 
 //get events
 exports.getEvents = (req, res, next) => {
-  Event.find().exec().then(
+  Event.find().sort({date: -1}).exec().then(
     result => {
       res.status(200).json({
         hasError: false,

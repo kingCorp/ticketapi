@@ -48,7 +48,7 @@ exports.createTicket = (req, res, next) => {
 
 //get tickets
 exports.getTickets = (req, res, next) => {
-  Ticket.find().populate('event').exec().then(
+  Ticket.find().populate('event').sort({date: -1}).exec().then(
     result => {
       res.status(200).json({
         hasError: false,
@@ -124,7 +124,7 @@ exports.updateTicketCorkage = (req, res, next) => {
 exports.getTicketsByEvent = (req, res, next) => {
   Ticket.find({
     event: req.params.id
-  }).populate('event').exec().then(doc => {
+  }).populate('event').sort({date: -1}).exec().then(doc => {
     res.status(200).json({
       hasError: false,
       message: "Tickets by event",
@@ -144,7 +144,7 @@ exports.getTicketsByEvent = (req, res, next) => {
 exports.getTicket = (req, res, next) => {
   Ticket.findOne({
     code: req.params.code
-  }).populate('event').exec().then(doc => {
+  }).populate('event').sort({date: -1}).exec().then(doc => {
     if(doc){
       res.status(200).json({
         hasError: false,
