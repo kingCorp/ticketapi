@@ -68,56 +68,99 @@ exports.getTickets = (req, res, next) => {
 //update tickets status
 exports.updateTicketStatus = (req, res, next) => {
   const id = req.params.code;
-  Ticket.update({
-      code: id
-    }, {
-      $set: {
-        status: 'approved'
-      }
-    })
-    .exec()
-    .then(result => {
+  
+  Ticket.findOne({
+    code: id
+  }).exec().then(doc => {
+    if(doc){
+
+      Ticket.update({
+        code: id
+      }, {
+        $set: {
+          status: 'approved'
+        }
+      })
+      .exec()
+      .then(result => {
+        res.status(200).json({
+          hasError: false,
+          message: 'Updated successfully',
+          data: doc,
+        });
+      })
+      .catch(err => {
+        res.status(500).json({
+          hasError: true,
+          message: 'An error occurred',
+          error: err
+        });
+      });      
+    } else {
       res.status(200).json({
-        hasError: false,
-        message: 'Updated successfully',
-        data: result,
-      });
-    })
-    .catch(err => {
-      res.status(500).json({
         hasError: true,
-        message: 'An error occurred',
-        error: err
+        message: 'ticket doesnt exist',
+        //error: err
       });
+    }
+  }).catch(err => {
+    console.log(err)
+    res.status(500).json({
+      hasError: true,
+      message: 'ticket doesnt exist',
+      error: err
     });
+  })
+
+
+  
 }
 
 //update tickets corkage
 exports.updateTicketCorkage = (req, res, next) => {
   const id = req.params.code;
-  Ticket.update({
+  Ticket.findOne({
     code: id
-  }, {
-    $set: {
-      corkage: 'approved'
-    }
-  })
-    .exec()
-    .then(result => {
-      console.log(result)
+  }).exec().then(doc => {
+    if(doc){
+
+      Ticket.update({
+        code: id
+      }, {
+        $set: {
+          corkage: 'approved'
+        }
+      })
+      .exec()
+      .then(result => {
+        res.status(200).json({
+          hasError: false,
+          message: 'Updated successfully',
+          data: doc,
+        });
+      })
+      .catch(err => {
+        res.status(500).json({
+          hasError: true,
+          message: 'An error occurred',
+          error: err
+        });
+      });      
+    } else {
       res.status(200).json({
-        hasError: false,
-        message: 'Updated successfully',
-        data: result,
-      });
-    })
-    .catch(err => {
-      res.status(500).json({
         hasError: true,
-        message: 'An error occurred',
-        error: err
+        message: 'ticket doesnt exist',
+        //error: err
       });
+    }
+  }).catch(err => {
+    console.log(err)
+    res.status(500).json({
+      hasError: true,
+      message: 'ticket doesnt exist',
+      error: err
     });
+  });
 }
 
 //get tickets for an event
@@ -140,11 +183,11 @@ exports.getTicketsByEvent = (req, res, next) => {
   })
 }
 
-//get tickets for an event
+//get ticket for an event
 exports.getTicket = (req, res, next) => {
   Ticket.findOne({
     code: req.params.code
-  }).populate('event').sort({date: -1}).exec().then(doc => {
+  }).populate('event').exec().then(doc => {
     if(doc){
       res.status(200).json({
         hasError: false,
