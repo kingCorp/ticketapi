@@ -5,6 +5,12 @@ const Ticket = require('../models/ticket');
 
 //create ticket
 exports.createTicket = (req, res, next) => {
+  if (req.body.passcode !== 'agudareal') {
+    return res.status(200).json({
+      hasError: true,
+      message: "Incorrect passcode cannot create ticket"
+    });
+  }
   Event.findById(req.params.id).exec().then(doc => {
     if (doc !== null) {
       let ticket = new Ticket({
@@ -48,7 +54,9 @@ exports.createTicket = (req, res, next) => {
 
 //get tickets
 exports.getTickets = (req, res, next) => {
-  Ticket.find().populate('event').sort({date: -1}).exec().then(
+  Ticket.find().populate('event').sort({
+    date: -1
+  }).exec().then(
     result => {
       res.status(200).json({
         hasError: false,
@@ -65,37 +73,48 @@ exports.getTickets = (req, res, next) => {
   })
 }
 
-//update tickets status
-exports.updateTicketStatus = (req, res, next) => {
+
+//update tickets
+exports.updateTicket = (req, res, next) => {
   const id = req.params.code;
-  
+  const data = {
+    phone: req.body.code,
+    price: req.body.code,
+    quantity: req.body.quantity
+  };
+
+  if (req.body.passcode = 'agudareal') {
+    return res.status(200).json({
+      hasError: true,
+      message: "Incorrect passcode cannot create ticket"
+    });
+  }
+
   Ticket.findOne({
     code: id
   }).exec().then(doc => {
-    if(doc){
+    if (doc) {
 
       Ticket.update({
-        code: id
-      }, {
-        $set: {
-          status: 'approved'
-        }
-      })
-      .exec()
-      .then(result => {
-        res.status(200).json({
-          hasError: false,
-          message: 'Updated successfully',
-          data: doc,
+          code: id
+        }, {
+          $set: data
+        })
+        .exec()
+        .then(result => {
+          res.status(200).json({
+            hasError: false,
+            message: 'Updated successfully',
+            data: doc,
+          });
+        })
+        .catch(err => {
+          res.status(500).json({
+            hasError: true,
+            message: 'An error occurred',
+            error: err
+          });
         });
-      })
-      .catch(err => {
-        res.status(500).json({
-          hasError: true,
-          message: 'An error occurred',
-          error: err
-        });
-      });      
     } else {
       res.status(200).json({
         hasError: true,
@@ -112,8 +131,56 @@ exports.updateTicketStatus = (req, res, next) => {
     });
   })
 
+}
 
-  
+
+//update tickets status
+exports.updateTicketStatus = (req, res, next) => {
+  const id = req.params.code;
+
+  Ticket.findOne({
+    code: id
+  }).exec().then(doc => {
+    if (doc) {
+
+      Ticket.update({
+          code: id
+        }, {
+          $set: {
+            status: 'approved'
+          }
+        })
+        .exec()
+        .then(result => {
+          res.status(200).json({
+            hasError: false,
+            message: 'Updated successfully',
+            data: doc,
+          });
+        })
+        .catch(err => {
+          res.status(500).json({
+            hasError: true,
+            message: 'An error occurred',
+            error: err
+          });
+        });
+    } else {
+      res.status(200).json({
+        hasError: true,
+        message: 'ticket doesnt exist',
+        //error: err
+      });
+    }
+  }).catch(err => {
+    console.log(err)
+    res.status(500).json({
+      hasError: true,
+      message: 'ticket doesnt exist',
+      error: err
+    });
+  })
+
 }
 
 //update tickets corkage
@@ -122,30 +189,30 @@ exports.updateTicketCorkage = (req, res, next) => {
   Ticket.findOne({
     code: id
   }).exec().then(doc => {
-    if(doc){
+    if (doc) {
 
       Ticket.update({
-        code: id
-      }, {
-        $set: {
-          corkage: 'approved'
-        }
-      })
-      .exec()
-      .then(result => {
-        res.status(200).json({
-          hasError: false,
-          message: 'Updated successfully',
-          data: doc,
+          code: id
+        }, {
+          $set: {
+            corkage: 'approved'
+          }
+        })
+        .exec()
+        .then(result => {
+          res.status(200).json({
+            hasError: false,
+            message: 'Updated successfully',
+            data: doc,
+          });
+        })
+        .catch(err => {
+          res.status(500).json({
+            hasError: true,
+            message: 'An error occurred',
+            error: err
+          });
         });
-      })
-      .catch(err => {
-        res.status(500).json({
-          hasError: true,
-          message: 'An error occurred',
-          error: err
-        });
-      });      
     } else {
       res.status(200).json({
         hasError: true,
@@ -167,7 +234,9 @@ exports.updateTicketCorkage = (req, res, next) => {
 exports.getTicketsByEvent = (req, res, next) => {
   Ticket.find({
     event: req.params.id
-  }).populate('event').sort({date: -1}).exec().then(doc => {
+  }).populate('event').sort({
+    date: -1
+  }).exec().then(doc => {
     res.status(200).json({
       hasError: false,
       message: "Tickets by event",
@@ -188,7 +257,7 @@ exports.getTicket = (req, res, next) => {
   Ticket.findOne({
     code: req.params.code
   }).populate('event').exec().then(doc => {
-    if(doc){
+    if (doc) {
       res.status(200).json({
         hasError: false,
         message: "Tickets Details",

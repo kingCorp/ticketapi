@@ -7,12 +7,15 @@ const Ticket = require('../controllers/ticket');
 
 //create event
 router.post('/:id', Ticket.createTicket);
+
+router.put('/:id', Ticket.updateTicket);
 //fetch all Event
 router.get('/', Ticket.getTickets);
 
 router.get('/:id/event', Ticket.getTicketsByEvent);
 
 router.get('/:code', Ticket.getTicket);
+
 
 router.get('/:code/status', Ticket.updateTicketStatus);
 

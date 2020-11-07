@@ -1,9 +1,10 @@
 const mongoose = require('mongoose');
+var uniqueValidator = require('mongoose-unique-validator');
 const Schema = mongoose.Schema;
 
 const ticketSchema = mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
-    code: {type: String, required: true},
+    code: {type: String, required: true, unique: true,},
     description: {type: String},
     phone: {type: String},
     price: {type: Number, required: true},
@@ -14,5 +15,7 @@ const ticketSchema = mongoose.Schema({
     user_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User'},
     date: { type: Date, default: Date.now },
 });
+
+ticketSchema.plugin(uniqueValidator);
 
 module.exports = mongoose.model('Ticket', ticketSchema);

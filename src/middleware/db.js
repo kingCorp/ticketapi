@@ -6,6 +6,7 @@ var mongodbUri ='mongodb://ds161518.mlab.com:61518/ticket_code';
 mongoose.connect(mongodbUri, {
   useNewUrlParser: true,
   useUnifiedTopology: true ,
+  autoIndex: true,
   auth: {
     user: 'james',
     password: 'password1'
