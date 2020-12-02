@@ -64,25 +64,19 @@ exports.getTickets = (req, res, next) => {
         data: result,
       })
     }).catch(err => {
-    console.log(err)
-    res.status(500).json({
-      hasError: true,
-      error: err,
-      message: "An error occurred"
-    });
-  })
+      console.log(err)
+      res.status(500).json({
+        hasError: true,
+        error: err,
+        message: "An error occurred"
+      });
+    })
 }
 
 
 //update tickets
 exports.updateTicket = (req, res, next) => {
   const id = req.params.id;
-  const data = {
-    code: req.body.code,
-    phone: req.body.phone,
-    price: req.body.price,
-    quantity: req.body.quantity
-  };
 
   if (req.body.passcode != 'agudareal') {
     return res.status(200).json({
@@ -91,46 +85,19 @@ exports.updateTicket = (req, res, next) => {
     });
   }
 
-  Ticket.findOne({
-    _id: id
-  }).exec().then(doc => {
-    if (doc) {
-
-      Ticket.update({
-          code: id
-        }, {
-          $set: data
-        })
-        .exec()
-        .then(result => {
-          res.status(200).json({
-            hasError: false,
-            message: 'Updated successfully',
-            data: doc,
-          });
-        })
-        .catch(err => {
-          res.status(500).json({
-            hasError: true,
-            message: 'An error occurred',
-            error: err
-          });
-        });
-    } else {
-      res.status(200).json({
-        hasError: true,
-        message: 'ticket doesnt exist',
-        //error: err
+  Ticket.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
+  .then(data => {
+    if (!data) {
+      res.status(404).send({
+        message: `Cannot update Ticket with id=${id}. Maybe Ticket was not found!`
       });
-    }
-  }).catch(err => {
-    console.log(err)
-    res.status(500).json({
-      hasError: true,
-      message: 'ticket doesnt exist',
-      error: err
-    });
+    } else res.send({ message: "Ticket was updated successfully." });
   })
+  .catch(err => {
+    res.status(500).send({
+      message: "Error updating Ticket with id=" + id
+    });
+  });
 
 }
 
@@ -145,12 +112,12 @@ exports.updateTicketStatus = (req, res, next) => {
     if (doc) {
 
       Ticket.update({
-          code: id
-        }, {
-          $set: {
-            status: 'approved'
-          }
-        })
+        code: id
+      }, {
+        $set: {
+          status: 'approved'
+        }
+      })
         .exec()
         .then(result => {
           res.status(200).json({
@@ -193,12 +160,12 @@ exports.updateTicketCorkage = (req, res, next) => {
     if (doc) {
 
       Ticket.update({
-          code: id
-        }, {
-          $set: {
-            corkage: 'approved'
-          }
-        })
+        code: id
+      }, {
+        $set: {
+          corkage: 'approved'
+        }
+      })
         .exec()
         .then(result => {
           res.status(200).json({
@@ -286,8 +253,8 @@ exports.getTicket = (req, res, next) => {
 exports.deleteTicket = (req, res, next) => {
   const id = req.params.id;
   Ticket.remove({
-      _id: id
-    })
+    _id: id
+  })
     .exec()
     .then(result => {
       res.status(200).json({
