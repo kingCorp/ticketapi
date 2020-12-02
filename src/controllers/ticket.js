@@ -76,14 +76,15 @@ exports.getTickets = (req, res, next) => {
 
 //update tickets
 exports.updateTicket = (req, res, next) => {
-  const id = req.params.code;
+  const id = req.params.id;
   const data = {
-    phone: req.body.code,
-    price: req.body.code,
+    code: req.body.code,
+    phone: req.body.phone,
+    price: req.body.price,
     quantity: req.body.quantity
   };
 
-  if (req.body.passcode = 'agudareal') {
+  if (req.body.passcode != 'agudareal') {
     return res.status(200).json({
       hasError: true,
       message: "Incorrect passcode cannot create ticket"
@@ -91,7 +92,7 @@ exports.updateTicket = (req, res, next) => {
   }
 
   Ticket.findOne({
-    code: id
+    _id: id
   }).exec().then(doc => {
     if (doc) {
 
@@ -282,22 +283,22 @@ exports.getTicket = (req, res, next) => {
 
 
 //delete user
-// exports.product_delete = (req, res, next) => {
-//   const id = req.params.id;
-//   Product.remove({
-//       _id: id
-//     })
-//     .exec()
-//     .then(result => {
-//       res.status(200).json({
-//         messgae: 'Product deleted',
-//         data: result
-//       })
-//     })
-//     .catch(err => {
-//       console.log(err)
-//       res.status(500).json({
-//         error: err
-//       });
-//     });
-// }
+exports.deleteTicket = (req, res, next) => {
+  const id = req.params.id;
+  Ticket.remove({
+      _id: id
+    })
+    .exec()
+    .then(result => {
+      res.status(200).json({
+        messgae: 'Ticket deleted',
+        data: result
+      })
+    })
+    .catch(err => {
+      console.log(err)
+      res.status(500).json({
+        error: err
+      });
+    });
+}

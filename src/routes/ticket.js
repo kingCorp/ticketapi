@@ -5,11 +5,14 @@ const router = express.Router();
 
 const Ticket = require('../controllers/ticket');
 
-//create event
+//create ticket
 router.post('/:id', Ticket.createTicket);
 
 router.put('/:id', Ticket.updateTicket);
-//fetch all Event
+
+router.delete('/:id', Ticket.deleteTicket);
+
+//fetch all ticket
 router.get('/', Ticket.getTickets);
 
 router.get('/:id/event', Ticket.getTicketsByEvent);
